@@ -1,6 +1,20 @@
 from flask import Flask, request,url_for, redirect, render_template
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
+db = SQLAlchemy(app)
+
+class User(db.model):
+    id = db.column(db.Integer, primary_key=True)
+    username = db.column(db.String(80),unique=True,nullible=False)
+    password_hash = db.Column(db.String())
 
 @app.route("/",methods = ["POST","GET"])
 def index():
